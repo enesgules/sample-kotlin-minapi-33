@@ -1,7 +1,7 @@
 # AGENTS
 
-For testing the app, always use the `lim` CLI which provides remtoe Android Emulator
-through `adb` tunnel.
+For testing the app, always use the `lim` CLI which provides remote Gradle builds and
+remote Android Emulators.
 
 Install `lim`:
 ```bash
@@ -12,16 +12,23 @@ Ensure `LIM_API_KEY` exists either as environment variable or in `.env` files.
 
 ## Development flow
 
-Once you have an APK file, you can get an emulator from Limrun:
+Build the debug APK on a remote Gradle sandbox and upload it to Limrun asset storage:
 
 ```bash
-lim android create
+lim gradle build . --upload sample-kotlin-minapi-33/app-debug.apk
 ```
-This will start the `adb` tunnel automatically. Also, it will return a signed stream URL
-that you can open in the browser to or tell user to open in their browser to stream the
-Android screen.
 
-You can install your APK with the following command:
+Get an emulator from Limrun with the APK installed, then launch the app:
+
+```bash
+lim android create --install-asset sample-kotlin-minapi-33/app-debug.apk
+lim android launch-app com.limrun.samplekotlin33 --detach
+```
+`lim android create` returns a signed stream URL that you can open in the browser, or tell
+the user to open, to stream the Android screen. When `adb` is installed, it also starts an
+`adb` tunnel. The `lim android` commands work without `adb`.
+
+To install a local APK file on a running emulator instead:
 ```bash
 lim android install-app <path to apk file>
 ```
